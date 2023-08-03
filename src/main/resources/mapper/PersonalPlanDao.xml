@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.livechat.todolist.dao.PersonalPlanDao">
+
+    <resultMap type="com.livechat.todolist.model.entity.PersonalPlan" id="PersonalPlanMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="openId" column="open_id" jdbcType="VARCHAR"/>
+        <result property="finished" column="finished" jdbcType="INTEGER"/>
+        <result property="tips" column="tips" jdbcType="VARCHAR"/>
+        <result property="planTime" column="plan_time" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="INTEGER"/>
+        <result property="icon" column="icon" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PersonalPlanMap">
+        select
+          id, open_id, finished, tips, plan_time, create_time, update_time,icon,remark
+        from personal_plan
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAll" resultMap="PersonalPlanMap">
+        select
+          id, open_id, finished, tips, plan_time, create_time, update_time,icon,remark
+        from personal_plan
+        <where>
+            <if test="openId != null and openId != ''">
+                and open_id = #{openId}
+            </if>
+            <if test="planTime != null and planTime != ''">
+                and plan_time = #{planTime}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from personal_plan
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="openId != null and openId != ''">
+                and open_id = #{openId}
+            </if>
+            <if test="finished != null">
+                and finished = #{finished}
+            </if>
+            <if test="tips != null and tips != ''">
+                and tips = #{tips}
+            </if>
+            <if test="planTime != null and planTime != ''">
+                and plan_time = #{planTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into personal_plan(open_id, finished, tips, plan_time, create_time, update_time,icon,remark)
+        values (#{openId}, #{finished}, #{tips}, #{planTime}, #{createTime}, #{updateTime},#{icon},#{remark})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into personal_plan(open_id, finished, tips, plan_time, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.openId}, #{entity.finished}, #{entity.tips}, #{entity.planTime}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into personal_plan(open_id, finished, tips, plan_time, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.openId}, #{entity.finished}, #{entity.tips}, #{entity.planTime}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        open_id = values(open_id),
+        finished = values(finished),
+        tips = values(tips),
+        plan_time = values(plan_time),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update personal_plan
+        <set>
+            <if test="openId != null and openId != ''">
+                open_id = #{openId},
+            </if>
+            <if test="finished != null">
+                finished = #{finished},
+            </if>
+            <if test="tips != null and tips != ''">
+                tips = #{tips},
+            </if>
+            <if test="planTime != null and planTime != ''">
+                plan_time = #{planTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateFinished">
+        update personal_plan
+        set finished=#{finished} where id=#{planId}
+    </update>
+    <update id="updateUserFinished">
+        update personal_plan
+        set finished=#{finished}
+        where tips=#{tips}
+          and plan_time=#{planTime}
+          and open_id=#{openId} and finished=#{finished}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from personal_plan where id = #{id}
+    </delete>
+    <delete id="delete">
+        delete from personal_plan where tips=#{tips} and planTime=#{planTime} and openId=#{openId}
+    </delete>
+
+
+</mapper>
+

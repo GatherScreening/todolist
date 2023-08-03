@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.livechat.todolist.dao.MiniProgressUserDao">
+
+    <resultMap type="com.livechat.todolist.model.entity.MiniProgressUser" id="MiniProgressUserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="openId" column="open_id" jdbcType="VARCHAR"/>
+        <result property="avatarBig" column="avatar_big" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="groupId" column="group_id" jdbcType="BIGINT"/>
+        <result property="recentLook" column="recent_look" jdbcType="BIGINT"/>
+
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="MiniProgressUserMap">
+        select
+          id, open_id, avatar_big, name, group_id, recent_look
+        from mini_progress_user
+        where open_id = #{openId}
+        order by recent_look desc
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="MiniProgressUserMap">
+        select
+          id, open_id, avatar_big, name
+        from mini_progress_user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="openId != null and openId != ''">
+                and open_id = #{openId}
+            </if>
+            <if test="avatarBig != null and avatarBig != ''">
+                and avatar_big = #{avatarBig}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from mini_progress_user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="openId != null and openId != ''">
+                and open_id = #{openId}
+            </if>
+            <if test="avatarBig != null and avatarBig != ''">
+                and avatar_big = #{avatarBig}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+        </where>
+    </select>
+    <select id="selectByGroupIdAndOpenId" resultMap="MiniProgressUserMap">
+        select id, open_id, avatar_big, `name`, group_id, recent_look
+        from mini_progress_user
+        where open_id = #{openId} and group_id = #{groupId}
+    </select>
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into mini_progress_user(open_id, avatar_big, name, group_id, recent_look)
+        values (#{openId}, #{avatarBig}, #{name},#{groupId},#{recentLook})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into mini_progress_user(open_id, avatar_big, name)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.openId}, #{entity.avatarBig}, #{entity.name})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into mini_progress_user(open_id, avatar_big, name)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.openId}, #{entity.avatarBig}, #{entity.name})
+        </foreach>
+        on duplicate key update
+        open_id = values(open_id),
+        avatar_big = values(avatar_big),
+        name = values(name)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update mini_progress_user
+        <set>
+            <if test="avatarBig != null and avatarBig != ''">
+                avatar_big = #{avatarBig},
+            </if>
+            <if test="name != null and name != ''">
+                `name` = #{name},
+            </if>
+        </set>
+        where open_id = #{openId}
+    </update>
+
+    <update id="updateRecentLook">
+        update mini_progress_user
+        set recent_look = #{recentLook}
+        where group_id = #{groupId} and open_id = #{openId}
+    </update>
+
+
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from mini_progress_user
+               where id = #{id}
+    </delete>
+
+    <delete id="deleteByGroupIdAndOpenId">
+        delete from mini_progress_user where
+        group_id=#{groupId} and open_id=#{openId}
+    </delete>
+
+</mapper>
+

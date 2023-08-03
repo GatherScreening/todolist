@@ -1,0 +1,32 @@
+server:
+  port: 8989
+  servlet:
+    context-path: /
+spring:
+  datasource:
+    continue-on-error: true
+    url: jdbc:mysql://10.38.163.6:3306/milog?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&useAffectedRows=true&zeroDateTimeBehavior=convertToNull
+    username: cmsuser_wr
+    password: dsad212Df
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    #数据库连接池选择默认 hikariCP
+    hikari.pool-name: HikariCP_Pool
+    hikari.auto-commit: true
+    hikari.maximum-pool-size: 500
+    hikari.minimum-idle: 30
+    hikari.idle-timeout: 30000
+    hikari.max-lifetime: 280000
+    hikari.connection-timeout: 30000
+    hikari.connection-test-query: SELECT 1
+#mybatis 配置
+mybatis:
+  mapper-locations: classpath*:mapper/**Dao.xml
+  type-aliases-package: com.xiaomi.game.search.dao.entity
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+url:
+  chatgpt:
+    chat: https://api.openai.com/v1/chat/completions
+    apiKey: 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
