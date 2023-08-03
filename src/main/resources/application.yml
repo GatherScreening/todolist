@@ -5,9 +5,9 @@ server:
 spring:
   datasource:
     continue-on-error: true
-    url: jdbc:mysql://10.38.163.6:3306/milog?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&useAffectedRows=true&zeroDateTimeBehavior=convertToNull
-    username: cmsuser_wr
-    password: dsad212Df
+    url: jdbc:mysql://43.139.173.126:3306/todolist?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&useAffectedRows=true&zeroDateTimeBehavior=convertToNull
+    username: zry
+    password: '@Tqinghua0321'
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
     #数据库连接池选择默认 hikariCP
